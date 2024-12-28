@@ -1,0 +1,252 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    background-color: #1e293b;
+    color: #fff;
+    padding: 15px;
+    border-right: 1px solid #ddd;
+    overflow-y: auto;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    padding: 10px;
+}
+
+/* Estilo para o logo do Gemini (centralizado) */
+.logo-container .logo {
+    display: block; /* Faz com que a imagem ocupe toda a largura disponível */
+    margin-left: auto;
+    margin-right: auto;
+    width: 80px; /* Ajuste o tamanho conforme necessário */
+    height: auto;
+}
+
+.new-chat-btn, .clear-chat-btn, .settings-btn {
+    background-color: #0D6EFD;
+    color: #fff;
+    border: none;
+    margin-bottom: 5px;
+}
+
+.new-chat-btn:hover, .clear-chat-btn:hover, .settings-btn:hover {
+    background-color: #0b5ed7;
+}
+
+.chat-list {
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.chat-list .chat-item {
+    padding: 10px;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chat-list .chat-item.user-chat-item {
+    background-color: #343541;
+    color: #fff;
+    border-radius: 5px;
+}
+.chat-list .chat-item.gpt-chat-item {
+    background-color: #444654;
+    color: #fff;
+    border-radius: 5px;
+}
+
+.chat-list .chat-item:hover {
+    background-color: #495057;
+}
+
+/* Main Chat Area Styles */
+.main-chat-area {
+    background-color: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.chat-header {
+    background-color: #fff;
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+    z-index: 10;
+}
+
+.chat-body {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 15px;
+}
+
+.chat-messages {
+    display: flex;
+    flex-direction: column;
+}
+
+.date-group {
+    margin-bottom: 20px;
+}
+
+.date-separator {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #868e96;
+}
+
+.date-separator span {
+    background-color: #f8f9fa;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.message {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+.user-message {
+    justify-content: flex-end;
+}
+
+.gpt-message {
+    justify-content: flex-start;
+}
+
+.user-avatar, .gpt-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.user-message .user-avatar {
+    order: 2; /* Puts the avatar on the right for user messages */
+    margin-right: 0;
+    margin-left: 10px;
+}
+
+.message-content {
+    padding: 10px;
+    border-radius: 5px;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+.user-message-content {
+    background-color: #343541;
+    color: #fff;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 0px;
+}
+
+.gpt-message-content {
+    background-color: #444654;
+    color: #fff;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 5px;
+}
+
+.chat-footer {
+    background-color: #fff;
+    padding: 15px;
+    border-top: 1px solid #ddd;
+}
+
+.input-form {
+    display: flex;
+}
+
+.input-form input[type="text"] {
+    flex-grow: 1;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin-right: 10px;
+}
+
+.send-btn {
+    background-color: #19c37d;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.send-btn:hover {
+    background-color: #19c37d;
+}
+
+.send-btn svg {
+    margin-right: 5px;
+}
+/* Model Selection Styles */
+.model-select-container {
+    margin-bottom: 20px;
+}
+
+.model-select-container label {
+    color: #fff;
+    margin-bottom: 5px;
+}
+
+.model-select-container .form-select {
+    background-color: #343541;
+    color: #fff;
+    border: 1px solid #6c757d;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.model-select-container .form-select:focus {
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* Estilos para os avatares */
+.user-avatar, .gpt-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+/* Estilo para o avatar do usuário */
+.user-message .user-avatar {
+    margin-left: 10px;
+    margin-right: 0;
+}
+
+/* Estilo para o avatar do GPT */
+.gpt-avatar {
+    margin-right: 10px;
+}
+
+/* ... outros estilos ... */
+
+.gpt-message-content {
+    background-color: #444654;
+    color: #fff;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 5px;
+    max-width: 80%; /* Define a largura máxima da resposta do Gemini */
+}
