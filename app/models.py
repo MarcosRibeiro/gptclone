@@ -21,7 +21,7 @@ def load_conversations(user_id, chat_id):
     try:
         mydb = get_db_connection()
         mycursor = mydb.cursor(dictionary=True)
-        mycursor.execute("SELECT user_message, gpt_response, DATE(timestamp) as date_group, chat_id FROM conversations WHERE user_id = %s AND chat_id = %s ORDER BY timestamp ASC", (user_id, chat_id))
+        mycursor.execute("SELECT user_message, gpt_response, DATE(timestamp) as date_group, chat_id FROM conversations WHERE user_id = %s AND chat_id = %s ORDER BY timestamp DESC", (user_id, chat_id))
         conversations = mycursor.fetchall()
         mydb.close()
         print("Conversas carregadas do banco:", conversations)
@@ -30,11 +30,12 @@ def load_conversations(user_id, chat_id):
         print(f"Erro ao carregar conversas: {err}")
         return []
 
-def clear_conversations(user_id):
+def clear_conversations(user_id, chat_id):
     try:
         mydb = get_db_connection()
         mycursor = mydb.cursor()
-        mycursor.execute("DELETE FROM conversations WHERE user_id = %s", (user_id,))
+        # Modifica a consulta para deletar pelo user_id e chat_id
+        mycursor.execute("DELETE FROM conversations WHERE user_id = %s AND chat_id = %s", (user_id, chat_id))
         mydb.commit()
         mydb.close()
     except mysql.connector.Error as err:

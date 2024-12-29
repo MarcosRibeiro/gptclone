@@ -71,14 +71,17 @@
         const modelSelect = document.getElementById('model-select');
         const chatList = document.querySelector('.chat-list');
 
+        // Função para rolar para o final do chat
         function scrollToBottom() {
             chatBody.scrollTop = chatBody.scrollHeight;
         }
 
+        // Adiciona mensagem na tela
         function appendMessage(sender, message) {
             const date = new Date();
             const dateGroup = date.toLocaleDateString('pt-BR');
 
+            // Verifica se já existe um grupo de data para hoje
             let dateGroupDiv = chatMessages.querySelector(`.date-group:last-child .date-separator span`);
             if (!dateGroupDiv || dateGroupDiv.textContent !== dateGroup) {
                 const newDateGroupDiv = document.createElement('div');
@@ -90,9 +93,11 @@
                 dateGroupDiv = chatMessages.querySelector(`.date-group:last-child`);
             }
 
+            // Cria a div da mensagem
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${sender}-message d-flex`;
 
+            // Adiciona a imagem do avatar
             const avatar = document.createElement('img');
             avatar.className = `${sender}-avatar`;
             avatar.alt = `${sender === 'user' ? 'User' : 'Gemini'} Avatar`;
@@ -104,16 +109,23 @@
             avatar.style.objectFit = 'cover';
             avatar.style.marginRight = '10px';
 
+            // Cria o conteúdo da mensagem
             const messageContentDiv = document.createElement('div');
             messageContentDiv.className = `message-content ${sender}-message-content`;
-            messageContentDiv.innerHTML = message;
+            messageContentDiv.innerHTML = message; // Usar innerHTML para mensagens do modelo
 
+            // Adiciona avatar e conteúdo da mensagem à div da mensagem
             messageDiv.appendChild(avatar);
             messageDiv.appendChild(messageContentDiv);
+
+            // Adiciona a mensagem ao último grupo de data
             dateGroupDiv.appendChild(messageDiv);
+
+            // Rola para o final para mostrar a nova mensagem
             scrollToBottom();
         }
 
+        // Função para carregar uma conversa específica
         async function loadChat(chatId) {
             try {
                 const response = await fetch(`/chat/${chatId}`);
@@ -121,18 +133,23 @@
                     throw new Error('Erro ao carregar a conversa');
                 }
                 const data = await response.json();
+
+                // Limpa a área de mensagens
                 chatMessages.innerHTML = '';
+
+                // Adiciona as mensagens da conversa à área de chat
                 data.conversations.forEach(conversa => {
                     appendMessage('user', conversa.user_message);
                     appendMessage('model', conversa.gpt_response);
                 });
+
                 scrollToBottom();
             } catch (error) {
                 console.error('Erro:', error);
             }
         }
 
-// Função para carregar as conversas e atualizar a barra lateral e a área de chat
+        // Função para carregar as conversas e atualizar a barra lateral e a área de chat
         async function loadConversations() {
             try {
                 const response = await fetch('/conversations');
@@ -144,7 +161,7 @@
                 // Atualiza a barra lateral com as conversas carregadas
                 updateSidebar(data.sidebar_conversations);
 
-                // Tenta carregar o chat atual ou o primeiro da lista
+                // Tenta carregar o chat atual ou o primeiro da lista se for um novo chat
                 if (data.current_chat_id) {
                     loadChat(data.current_chat_id);
                 } else if (data.conversations.length > 0) {
@@ -155,8 +172,10 @@
             }
         }
 
+        // Atualiza a barra lateral com as conversas
         function updateSidebar(sidebarConversations) {
-            chatList.innerHTML = '';
+            chatList.innerHTML = ''; // Limpa a lista atual
+
             for (const date in sidebarConversations) {
                 const chatDateGroup = document.createElement('div');
                 chatDateGroup.className = 'chat-date-group';
@@ -166,14 +185,15 @@
                     const chatItemLink = document.createElement('a');
                     chatItemLink.href = `/chat/${message.chat_id}`;
                     chatItemLink.className = 'chat-item-link';
-                    chatItemLink.dataset.chatId = message.chat_id;
+                    chatItemLink.dataset.chatId = message.chat_id; // Adiciona o chat_id como um atributo de dados
                     chatItemLink.addEventListener('click', function(event) {
                         event.preventDefault();
-                        loadChat(message.chat_id);
+                        loadChat(message.chat_id); // Carrega a conversa ao clicar
                     });
 
                     const chatItem = document.createElement('div');
                     chatItem.className = `chat-item ${message.user_message ? 'user-chat-item' : 'gpt-chat-item'}`;
+                    // Usa a primeira mensagem do chat como descrição, truncada para 25 caracteres
                     const messageContent = message.user_message ? message.user_message.substring(0, 25) : message.gpt_response.substring(0, 50);
                     chatItem.innerHTML = `<p class="mt-3">${messageContent}</p>`;
 
@@ -185,7 +205,8 @@
             }
         }
 
-        document.addEventListener('click', function (e) {
+        // Evento de clique para os links da barra lateral
+        chatList.addEventListener('click', function (e) {
             if (e.target.closest('.chat-item-link')) {
                 e.preventDefault();
                 const chatId = e.target.closest('.chat-item-link').dataset.chatId;
@@ -193,14 +214,15 @@
             }
         });
 
+        // Processa submissão do formulário
         inputForm.addEventListener('submit', async function (e) {
             e.preventDefault();
 
             const message = messageInput.value.trim();
             if (!message) return;
 
-            appendMessage('user', message);
-            messageInput.value = '';
+            appendMessage('user', message); // Adiciona mensagem do usuário
+            messageInput.value = ''; // Limpa o campo de input
 
             try {
                 const response = await fetch('/', {
@@ -216,13 +238,14 @@
                 }
 
                 const data = await response.json();
-                appendMessage('model', data.response);
+                appendMessage('model', data.response); // Adiciona resposta do modelo
             } catch (error) {
                 console.error('Erro:', error);
                 appendMessage('model', 'Erro ao processar a mensagem. Tente novamente.');
             }
         });
 
+        // Adiciona funcionalidade ao pressionar "Enter" para enviar
         messageInput.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
@@ -239,9 +262,8 @@
                 }
                 const data = await response.json();
                 if (data.action === 'new_chat') {
-                    // Carrega o novo chat criado
-                    await loadChat(data.chat_id);
-                    // Atualiza a lista de conversas na barra lateral
+                    // Limpa a área de chat
+                    chatMessages.innerHTML = '';
                     await loadConversations();
                 }
             } catch (error) {
@@ -249,11 +271,13 @@
             }
         }
 
+        // Evento de clique para o botão "Novo Chat"
         document.querySelector('.new-chat-btn').addEventListener('click', function(event) {
             event.preventDefault();
             createNewChat();
         });
 
+        // Evento de clique para o botão "Limpar Conversas"
         document.querySelector('.clear-chat-btn').addEventListener('click', async function(event) {
             event.preventDefault();
             try {
@@ -261,14 +285,19 @@
                 if (!response.ok) {
                     throw new Error('Erro ao limpar conversas');
                 }
-                chatMessages.innerHTML = ''; // Limpa as mensagens da tela
-                loadConversations(); // Recarrega a lista de conversas
+                // Limpa as mensagens da tela
+                chatMessages.innerHTML = '';
+                // Recarrega a lista de conversas
+                await loadConversations();
             } catch (error) {
                 console.error('Erro:', error);
             }
         });
 
+        // Carrega as conversas ao iniciar
         loadConversations();
+
+        // Ajusta rolagem inicial
         scrollToBottom();
     });
 </script>
